@@ -17,27 +17,36 @@
             <button type="submit">Trace</button>
         </form>
 
-        {% if info %}
-        <div class="result-card">
-            <h2>📄 IP Details</h2>
-            <p><strong>IP:</strong> {{ info.ip }}</p>
-            <p><strong>Location:</strong> {{ info.city }}, {{ info.region }}, {{ info.country }} {{ info.flag }}</p>
-            <p><strong>ISP:</strong> {{ info.isp }}</p>
-            <p><strong>ORG:</strong> {{ info.org }}</p>
-            <p><strong>ASN:</strong> {{ info.asn }}</p>
-            <p><strong>VPN:</strong> {{ '🔒 Yes' if info.is_vpn else '✅ No' }}</p>
-
-            <div id="map" style="height: 300px; margin-top: 1em; border-radius: 10px;"></div>
-
-            <p class="map-link">
-                🔗 <a href="{{ info.map_link }}" target="_blank">Open in Google Maps</a>
-            </p>
-        </div>
-        {% endif %}
-    </div>
-
-    <script>
     {% if info %}
+<div class="result-card">
+    <h2>📄 IP Details</h2>
+    <p><strong>IP:</strong> {{ info.ip }}</p>
+    <p><strong>Type:</strong> {{ info.type }}</p>
+
+    {% if info.type == 'Private' %}
+        <p>{{ info.message }}</p>
+        <p><strong>Note:</strong> This IP is from a local network (LAN) and cannot be geolocated.</p>
+    {% else %}
+        <p><strong>Location:</strong> {{ info.city }}, {{ info.region }}, {{ info.country }} {{ info.flag }}</p>
+        <p><strong>ISP:</strong> {{ info.isp }}</p>
+        <p><strong>ORG:</strong> {{ info.org }}</p>
+        <p><strong>ASN:</strong> {{ info.asn }}</p>
+        <p><strong>VPN:</strong> {{ '🔒 Yes' if info.is_vpn else '✅ No' }}</p>
+
+        <div id="map" style="height: 300px; margin-top: 1em; border-radius: 10px;"></div>
+
+        <p class="map-link">
+            🔗 <a href="{{ info.map_link }}" target="_blank">Open in Google Maps</a>
+        </p>
+    {% endif %}
+</div>
+{% endif %}
+
+    </div>
+    
+<script>
+{% if info and info.type == 'Public' %}
+
         const map = L.map('map').setView([{{ info.latitude }}, {{ info.longitude }}], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
