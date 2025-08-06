@@ -17,7 +17,7 @@
             <button type="submit">Trace</button>
         </form>
 
-    {% if info %}
+{% if info %}
 <div class="result-card">
     <h2>📄 IP Details</h2>
     <p><strong>IP:</strong> {{ info.ip }}</p>
@@ -40,12 +40,9 @@
         </p>
     {% endif %}
 </div>
-{% endif %}
-
-    </div>
     
 <script>
-{% if info and info.type == 'Public' %}
+{% if info and info.latitude %}
 
         const map = L.map('map').setView([{{ info.latitude }}, {{ info.longitude }}], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
