@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GeoTrace 🌍</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 GeoTrace</h1>
+        <p class="subtitle">Trace IPs with precision, power, and preview</p>
+
+        <form method="POST">
+            <input type="text" name="ip" placeholder="Enter IP address (e.g., 8.8.8.8)" required>
+            <button type="submit">Trace</button>
+        </form>
+
+        {% if info %}
+        <div class="result-card">
+            <h2>📄 IP Details</h2>
+            <p><strong>IP:</strong> {{ info.ip }}</p>
+            <p><strong>Location:</strong> {{ info.city }}, {{ info.region }}, {{ info.country }} {{ info.flag }}</p>
+            <p><strong>ISP:</strong> {{ info.isp }}</p>
+            <p><strong>ORG:</strong> {{ info.org }}</p>
+            <p><strong>ASN:</strong> {{ info.asn }}</p>
+            <p><strong>VPN:</strong> {{ '🔒 Yes' if info.is_vpn else '✅ No' }}</p>
+
+            <div id="map" style="height: 300px; margin-top: 1em; border-radius: 10px;"></div>
+
+            <p class="map-link">
+                🔗 <a href="{{ info.map_link }}" target="_blank">Open in Google Maps</a>
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+    {% if info %}
+        const map = L.map('map').setView([{{ info.latitude }}, {{ info.longitude }}], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        L.marker([{{ info.latitude }}, {{ info.longitude }}]).addTo(map)
+            .bindPopup("{{ info.city }}, {{ info.country }}")
+            .openPopup();
+    {% endif %}
+    </script>
+</body>
+</html>
